@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  UnityTests:
+    docker:
+      - image: gableroux/unity3d:2018.4.15f1
+    steps:
+      - run:
+          name: Execute Unity Test Runner (PlayMode)
+          command: echo "First commit"
