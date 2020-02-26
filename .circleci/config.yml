@@ -21,7 +21,7 @@ commands:
             echo "Decoding and writing licence file to /root/.local/share/unity3d/Unity/Unity_lic.ulf"
             echo
 
-            cat $ACTIVATION_ULF_ENC | base64 --decode > /root/.local/share/unity3d/Unity/Unity_lic.ulf
+            echo $ACTIVATION_ULF_ENC | base64 --decode > /root/.local/share/unity3d/Unity/Unity_lic.ulf
   run_tests:
     steps:
       - run:
