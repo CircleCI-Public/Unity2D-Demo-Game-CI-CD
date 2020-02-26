@@ -22,8 +22,8 @@ commands:
             echo
             echo " Activating "
             echo
-            echo $ACTIVATION_ULF_ENC | base64 --decode > ./"$UNITY_LICENCE_FILE_NAME"
-            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -manualLicenseFile ./"$UNITY_LICENCE_FILE_NAME"
+            echo $ACTIVATION_ULF_ENC | base64 --decode > ./Unity_v2020.x.ulf
+            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -manualLicenseFile ./Unity_v2020.x.ulf
 
   run_tests:
     steps:
@@ -32,6 +32,7 @@ commands:
           command: |
             set -x
             CIRCLE_WORKING_DIRECTORY=/root
+            TEST_PLATFORM="StandaloneLinux64"
             echo "Testing for $TEST_PLATFORM"
 
             ${-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
