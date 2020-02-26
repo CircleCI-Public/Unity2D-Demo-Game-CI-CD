@@ -16,14 +16,14 @@ commands:
               exit 1
             fi
             echo
-            echo "Decoding and writing licence file to ./$UNITY_LICENCE_FILE_NAME"
+            echo "Decoding and writing licence file to ./Unity_v2020.x.ulf"
             echo
             echo " --- "
             echo
             echo " Activating "
             echo
             echo $ACTIVATION_ULF_ENC | base64 --decode > ./Unity_v2020.x.ulf
-            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile /dev/stdout -manualLicenseFile ./Unity_v2020.x.ulf
+            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile /dev/stdout -manualLicenseFile ./Unity_v2020.x.ulf || exit 0
 
   run_tests:
     steps:
