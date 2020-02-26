@@ -23,7 +23,7 @@ commands:
             echo " Activating "
             echo
             echo $ACTIVATION_ULF_ENC | base64 --decode > ./Unity_v2020.x.ulf
-            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -manualLicenseFile ./Unity_v2020.x.ulf
+            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile /dev/stdout -manualLicenseFile ./Unity_v2020.x.ulf
 
   run_tests:
     steps:
