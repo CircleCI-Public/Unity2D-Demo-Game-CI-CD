@@ -32,10 +32,10 @@ commands:
             echo "Testing for $TEST_PLATFORM"
 
             ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
-              -projectPath $(pwd) \
+              -projectPath $CIRCLE_WORKING_DIRECTORY \
               -runTests \
               -testPlatform $TEST_PLATFORM \
-              -testResults $(pwd)/$TEST_PLATFORM-results.xml \
+              -testResults $CIRCLE_WORKING_DIRECTORY/$TEST_PLATFORM-results.xml \
               -logFile /dev/stdout \
               -batchmode
 
@@ -51,7 +51,7 @@ commands:
               echo "Unexpected exit code $UNITY_EXIT_CODE";
             fi
 
-            cat $(pwd)/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
+            cat $CIRCLE_WORKING_DIRECTORY/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
             exit $UNITY_TEST_EXIT_CODE
             
 jobs:
