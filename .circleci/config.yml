@@ -31,17 +31,20 @@ commands:
           name: Testing
           command: |
             set -x
-            CIRCLE_WORKING_DIRECTORY=/root
+            HOME=/root
             TEST_PLATFORM="StandaloneLinux64"
             echo "Testing for $TEST_PLATFORM"
 
-            ${-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
-              -projectPath $CIRCLE_WORKING_DIRECTORY \
+            ll
+
+            xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
+            /opt/Unity/Editor/Unity \
+              -projectPath ~/ \
               -runTests \
               -testPlatform $TEST_PLATFORM \
-              -testResults $CIRCLE_WORKING_DIRECTORY/$TEST_PLATFORM-results.xml \
-              -logFile /dev/stdout \
+              -testResults ~/$TEST_PLATFORM-results.xml \
               -batchmode
+
 
             UNITY_EXIT_CODE=$?
 
