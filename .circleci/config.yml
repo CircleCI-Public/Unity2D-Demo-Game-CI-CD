@@ -35,7 +35,7 @@ commands:
             TEST_PLATFORM="StandaloneLinux64"
             echo "Testing for $TEST_PLATFORM"
 
-            ll
+            ls -lah
 
             xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
             /opt/Unity/Editor/Unity \
