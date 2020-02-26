@@ -63,3 +63,8 @@ jobs:
           command: echo "First commit"
       - activate
       - run_tests
+
+workflows:
+  Unity_Test_Deploy:
+    jobs:
+      - UnityTests
