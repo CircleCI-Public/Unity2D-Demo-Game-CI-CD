@@ -21,7 +21,7 @@ RUN echo y | \
     --install-location=/opt/Unity \
     --verbose \
     --download-location=/tmp/unity
-RUN # remove setup & temp files
+# remove setup & temp files
 RUN rm UnitySetup
 RUN rm -rf /tmp/unity
 RUN rm -rf /root/.local/share/Trash/*
