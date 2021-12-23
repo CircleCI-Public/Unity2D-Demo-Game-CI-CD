@@ -49,8 +49,8 @@ commands:
               echo "Unexpected exit code $UNITY_EXIT_CODE";
             fi
 
-            cat ./results.xml
-            cat ./results.xml | grep test-run | grep Passed
+            cat src/results.xml
+            cat src/results.xml | grep test-run | grep Passed
             exit $UNITY_TEST_EXIT_CODE
             
 jobs:
