@@ -2,7 +2,7 @@ version: 2.1
 executors:
   unity:
     docker:
-      - image: gableroux/unity3d:2020.1.0a21
+      - image: unityci/editor:2021.2.7f1-mac-mono-0.15
 commands:
   activate:
     steps:
