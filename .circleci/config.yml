@@ -9,19 +9,17 @@ commands:
       - run:
           name: "Activate Unity Licence File"
           command: |
-            mkdir -p /root/.cache/unity3d
-            mkdir -p /root/.local/share/unity3d/Unity/
-
             if [[ -z $"ACTIVATION_ULF_ENC" ]]; then
-              echo "ACTIVATION_ULF_ENC is missing. You must provide the base64 encoded  ULF licence file contents."
+              echo "ACTIVATION_ULF_ENC is missing. You must provide the base64 encoded ULF licence file contents."
               exit 1
             fi
 
             echo
-            echo "Decoding and writing licence file to /root/.local/share/unity3d/Unity/Unity_lic.ulf"
+            echo "Decoding and writing licence file to /root/Unity_lic.ulf"
             echo
 
-            cat $ACTIVATION_ULF_ENC | base64 --decode > /root/.local/share/unity3d/Unity/Unity_lic.ulf
+            cat $ACTIVATION_ULF_ENC | base64 --decode > /root/Unity_lic.ulf
+            /opt/unity/Editor/Unity -batchmode -manualLicenseFile /root/Unity_lic.ulf -logfile /dev/stdout
   run_tests:
     steps:
       - run:
@@ -29,13 +27,11 @@ commands:
           command: |
             set -x
 
-            echo "Testing for $TEST_PLATFORM"
-
-            ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
-              -projectPath $(pwd) \
+            ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/unity/Editor/Unity} \
+              -projectPath $(pwd)/src \
               -runTests \
-              -testPlatform $TEST_PLATFORM \
-              -testResults $(pwd)/$TEST_PLATFORM-results.xml \
+              -testPlatform PlayMode \
+              -testResults ./results.xml \
               -logFile /dev/stdout \
               -batchmode
 
@@ -51,16 +47,15 @@ commands:
               echo "Unexpected exit code $UNITY_EXIT_CODE";
             fi
 
-            cat $(pwd)/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
+            cat ./results.xml
+            cat ./results.xml | grep test-run | grep Passed
             exit $UNITY_TEST_EXIT_CODE
             
 jobs:
   UnityTests:
     executor: unity
     steps:
-      - run:
-          name: Demo Unity
-          command: echo "First commit"
+      - checkout
       - activate
       - run_tests
 
