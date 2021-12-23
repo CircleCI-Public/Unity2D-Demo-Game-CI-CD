@@ -19,7 +19,9 @@ commands:
             echo
 
             echo "$ACTIVATION_ULF_ENC" | base64 --decode > /root/Unity_lic.ulf
-            /opt/unity/Editor/Unity -batchmode -manualLicenseFile /root/Unity_lic.ulf -logfile /dev/stdout
+            /opt/unity/Editor/Unity -batchmode -manualLicenseFile /root/Unity_lic.ulf -logfile /dev/stdout || true
+
+            echo "Unity exit code: $?" 
   run_tests:
     steps:
       - run:
