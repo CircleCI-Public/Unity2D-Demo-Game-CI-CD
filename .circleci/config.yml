@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  unity: ericribeiro/unity@dev:c8c0d9c
+  unity: ericribeiro/unity@dev:306f458
 workflows:
   test:
     jobs:
