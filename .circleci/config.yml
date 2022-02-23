@@ -9,3 +9,5 @@ workflows:
             parameters:
               tag: [ "2021.2.7f1-mac-mono-0.15", "2021.2.7f1-windows-mono-0.15", "2021.2.7f1-android-0.15.0"]
           test-platform: "PlayMode"
+          license: "ACTIVATION_ULF_ENC"
+          verbose: true
