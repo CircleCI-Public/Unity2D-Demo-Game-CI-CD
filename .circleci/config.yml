@@ -7,16 +7,16 @@ workflows:
       - unity/test:
           matrix:
             parameters:
-              tag: [ "2021.2.7f1-mac-mono-0.15" ]
+              tag: [ "ubuntu-2021.1.0f1-linux-il2cpp-1" ]
           test-platform: "PlayMode"
           license: "ACTIVATION_ULF_ENC"
           verbose: true
       - unity/build:
           matrix:
             parameters:
-              tag: [ "2021.2.7f1-mac-mono-0.15" ]
+              tag: [ "ubuntu-2021.1.0f1-linux-il2cpp-1" ]
           project-path: "src"
-          build-target: StandaloneOSX
+          build-target: Linux64
           build-method: "UnityBuilderAction.Builder.BuildProject"
           build-artifact-path: build
           build-artifact-filename: PotatoGame
