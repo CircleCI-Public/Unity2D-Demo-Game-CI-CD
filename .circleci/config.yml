@@ -16,7 +16,7 @@ workflows:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           project-path: "src"
-          build-target: Linux64
+          build-target: StandaloneLinux64
           build-method: "UnityBuilderAction.Builder.BuildProject"
           build-artifact-path: build
           build-artifact-filename: PotatoGame
