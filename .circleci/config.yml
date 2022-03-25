@@ -17,7 +17,7 @@ workflows:
               tag: [ "2021.2.7f1-mac-mono-0.15" ]
           project-path: "src"
           build-target: StandaloneOSX
-          execute-method: "UnityBuilderAction.Builder.BuildProject"
+          build-method: "UnityBuilderAction.Builder.BuildProject"
           build-artifact-path: build
           build-artifact-filename: PotatoGame
           build-version: 0.0.1
