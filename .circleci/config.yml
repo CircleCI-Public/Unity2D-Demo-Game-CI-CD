@@ -7,14 +7,14 @@ workflows:
       - unity/test:
           matrix:
             parameters:
-              tag: [ "ubuntu-2021.1.0f1-linux-il2cpp-1" ]
+              tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           test-platform: "PlayMode"
           license: "ACTIVATION_ULF_ENC"
           verbose: true
       - unity/build:
           matrix:
             parameters:
-              tag: [ "ubuntu-2021.1.0f1-linux-il2cpp-1" ]
+              tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           project-path: "src"
           build-target: Linux64
           build-method: "UnityBuilderAction.Builder.BuildProject"
