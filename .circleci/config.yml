@@ -4,23 +4,22 @@ orbs:
 workflows:
   test:
     jobs:
+      - run:
+          # Necessary to re-use GameCI's script as is.
+          name: "Prepare environment for activation."
+          command: |
+            activate_license_path="${CIRCLE_WORKING_DIRECTORY/\~/$HOME}/_activate-license~"
+            encoded_unity_license="${!ACTIVATION_ULF_ENC}"
+            decoded_unity_license=$(printf '%s' "$encoded_unity_license" | base64 --decode)
+
+            mkdir -p "$activate_license_path"
+
+            printf '%s' "export ACTIVATE_LICENSE_PATH=$activate_license_path" >> $BASH_ENV
+            printf '%s' "export UNITY_LICENSE=$decoded_unity_license" >> $BASH_ENV
+      - unity/activate
       - unity/test:
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           test-platform: "PlayMode"
-          license: "ACTIVATION_ULF_ENC"
           verbose: true
-      - unity/build:
-          matrix:
-            parameters:
-              tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
-          project-path: "src"
-          build-target: StandaloneLinux64
-          build-method: "UnityBuilderAction.Builder.BuildProject"
-          build-artifact-path: build
-          build-artifact-filename: PotatoGame
-          build-version: 0.0.1
-          build-name: PotatoGameBuild
-          verbose: true
-          license: "ACTIVATION_ULF_ENC"
