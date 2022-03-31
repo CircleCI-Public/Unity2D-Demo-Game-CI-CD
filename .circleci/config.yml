@@ -6,8 +6,8 @@ orbs:
 jobs:
   prepare-env:
     docker:
-      - image: ubuntu-2021.2.7f1-linux-il2cpp-1
-      
+      - image: unityci/editor:ubuntu-2021.2.7f1-linux-il2cpp-1
+
     steps:
       - run:
           name: "Prepare environment for activation."
@@ -25,10 +25,14 @@ workflows:
   test:
     jobs:
       - prepare-env
-      - unity/activate
+      - unity/activate:
+          requires:
+            - prepare-env
       - unity/test:
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           test-platform: "PlayMode"
           verbose: true
+          requires:
+            - unity/activate
