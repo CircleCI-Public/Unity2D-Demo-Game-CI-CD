@@ -6,7 +6,8 @@ orbs:
 workflows:
   test:
     jobs:
-      - unity/activate
+      - unity/activate:
+          unity-license-var-name: "ACTIVATION_ULF_ENC"
       - unity/test:
           matrix:
             parameters:
