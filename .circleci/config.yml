@@ -13,7 +13,7 @@ jobs:
           name: "Prepare environment for activation."
           command: |
             activate_license_path="${CIRCLE_WORKING_DIRECTORY/\~/$HOME}/_activate-license~"
-            encoded_unity_license="${!ACTIVATION_ULF_ENC}"
+            encoded_unity_license=$(eval echo "$ACTIVATION_ULF_ENC")
             decoded_unity_license=$(printf '%s' "$encoded_unity_license" | base64 --decode)
 
             mkdir -p "$activate_license_path"
