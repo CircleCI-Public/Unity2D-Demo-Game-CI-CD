@@ -1,11 +1,15 @@
 version: 2.1
+
 orbs:
   unity: ericribeiro/unity@dev:alpha
-workflows:
-  test:
-    jobs:
+
+jobs:
+  prepare-env:
+    docker:
+      - image: ubuntu-2021.2.7f1-linux-il2cpp-1
+      
+    steps:
       - run:
-          # Necessary to re-use GameCI's script as is.
           name: "Prepare environment for activation."
           command: |
             activate_license_path="${CIRCLE_WORKING_DIRECTORY/\~/$HOME}/_activate-license~"
@@ -16,6 +20,11 @@ workflows:
 
             printf '%s' "export ACTIVATE_LICENSE_PATH=$activate_license_path" >> $BASH_ENV
             printf '%s' "export UNITY_LICENSE=$decoded_unity_license" >> $BASH_ENV
+
+workflows:
+  test:
+    jobs:
+      - prepare-env
       - unity/activate
       - unity/test:
           matrix:
