@@ -11,5 +11,5 @@ workflows:
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
-          project-name: "src"
+          project-path: "src"
           build-target: StandaloneLinux64
