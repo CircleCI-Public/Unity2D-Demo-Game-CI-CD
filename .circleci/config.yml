@@ -7,7 +7,7 @@ workflows:
   test:
     jobs:
       - unity/build:
-          unity-license-var-name: "ACTIVATION_ULF_ENC"
+          license: "ACTIVATION_ULF_ENC"
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
