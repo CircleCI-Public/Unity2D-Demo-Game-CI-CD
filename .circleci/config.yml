@@ -6,13 +6,10 @@ orbs:
 workflows:
   test:
     jobs:
-      - unity/activate:
+      - unity/build:
           unity-license-var-name: "ACTIVATION_ULF_ENC"
-      - unity/test:
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
-          test-platform: "PlayMode"
-          verbose: true
-          requires:
-            - unity/activate
+          project-name: "src"
+          build-target: StandaloneLinux64
