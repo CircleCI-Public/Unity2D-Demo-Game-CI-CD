@@ -19,4 +19,4 @@ workflows:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           project-path: "src"
-          test-platform: "editmode"
+          test-platform: "playmode"
