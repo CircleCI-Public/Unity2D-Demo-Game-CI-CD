@@ -6,10 +6,17 @@ orbs:
 workflows:
   test:
     jobs:
+      # - unity/build:
+      #     license: "ACTIVATION_ULF_ENC"
+      #     matrix:
+      #       parameters:
+      #         tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
+      #     project-path: "src"
+      #     build-target: StandaloneLinux64
       - unity/build:
           license: "ACTIVATION_ULF_ENC"
           matrix:
             parameters:
               tag: [ "ubuntu-2021.2.7f1-linux-il2cpp-1" ]
           project-path: "src"
-          build-target: StandaloneLinux64
+          test-platform: "editmode"
