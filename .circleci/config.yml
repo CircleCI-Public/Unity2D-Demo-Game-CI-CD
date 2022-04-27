@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  unity: game-ci/unity@0.1.0
+  unity: game-ci/unity@0.1.1
 
 workflows:
   test_and_build:
@@ -10,8 +10,9 @@ workflows:
           name: "test-2021"
           unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
           executor:
-              name: "unity/ubuntu-2021"
-              target-platform: "linux-il2cpp"
+            name: "unity/ubuntu-2021"
+            target-platform: "linux-il2cpp"
+            resource-class: "medium"
           project-path: "src"
           test-platform: "playmode"
           context: unity-orb-testing
@@ -20,8 +21,9 @@ workflows:
           step-name: "Build StandaloneLinux64"
           unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
           executor:
-              name: "unity/ubuntu-2021"
-              target-platform: "linux-il2cpp"
+            name: "unity/ubuntu-2021"
+            target-platform: "linux-il2cpp"
+            resource-class: "medium"
           project-path: "src"
           build-target: StandaloneLinux64
           compress: true
@@ -33,11 +35,26 @@ workflows:
           step-name: "Build WebGL"
           unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
           executor:
-              name: "unity/ubuntu-2021"
-              target-platform: "webgl"
+            name: "unity/ubuntu"
+            target-platform: "webgl"
+            editor-version: "2021.2.11f1"
+            resource-class: "large"
           project-path: "src"
           build-target: "WebGL"
           compress: false
+          requires:
+            - test-2021
+          context: unity-orb-testing
+      - unity/build:
+          name: "build-osx"
+          step-name: "Build StandaloneOSX"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu-2021"
+            target-platform: "mac-mono"
+            resource-class: "medium"
+          project-path: "src"
+          build-target: "StandaloneOSX"
           requires:
             - test-2021
           context: unity-orb-testing
@@ -46,11 +63,11 @@ workflows:
           step-name: "Build StandaloneWindows64"
           unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
           executor:
-              name: "unity/ubuntu-2021"
-              target-platform: "windows-mono"
+            name: "unity/ubuntu-2021"
+            target-platform: "windows-mono"
+            resource-class: "medium"
           project-path: "src"
           build-target: "StandaloneWindows64"
           requires:
             - test-2021
           context: unity-orb-testing
- 
