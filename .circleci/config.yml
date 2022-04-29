@@ -1,70 +1,73 @@
 version: 2.1
-executors:
-  unity:
-    docker:
-      - image: gableroux/unity3d:2020.1.0a21
-commands:
-  activate:
-    steps:
-      - run:
-          name: "Activate Unity Licence File"
-          command: |
-            mkdir -p /root/.cache/unity3d
-            mkdir -p /root/.local/share/unity3d/Unity/
 
-            if [[ -z $"ACTIVATION_ULF_ENC" ]]; then
-              echo "ACTIVATION_ULF_ENC is missing. You must provide the base64 encoded  ULF licence file contents."
-              exit 1
-            fi
-
-            echo
-            echo "Decoding and writing licence file to /root/.local/share/unity3d/Unity/Unity_lic.ulf"
-            echo
-
-            cat $ACTIVATION_ULF_ENC | base64 --decode > /root/.local/share/unity3d/Unity/Unity_lic.ulf
-  run_tests:
-    steps:
-      - run:
-          name: Testing
-          command: |
-            set -x
-
-            echo "Testing for $TEST_PLATFORM"
-
-            ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity} \
-              -projectPath $(pwd) \
-              -runTests \
-              -testPlatform $TEST_PLATFORM \
-              -testResults $(pwd)/$TEST_PLATFORM-results.xml \
-              -logFile /dev/stdout \
-              -batchmode
-
-            UNITY_EXIT_CODE=$?
-
-            if [ $UNITY_EXIT_CODE -eq 0 ]; then
-              echo "Run succeeded, no failures occurred";
-            elif [ $UNITY_EXIT_CODE -eq 2 ]; then
-              echo "Run succeeded, some tests failed";
-            elif [ $UNITY_EXIT_CODE -eq 3 ]; then
-              echo "Run failure (other failure)";
-            else
-              echo "Unexpected exit code $UNITY_EXIT_CODE";
-            fi
-
-            cat $(pwd)/$TEST_PLATFORM-results.xml | grep test-run | grep Passed
-            exit $UNITY_TEST_EXIT_CODE
-            
-jobs:
-  UnityTests:
-    executor: unity
-    steps:
-      - run:
-          name: Demo Unity
-          command: echo "First commit"
-      - activate
-      - run_tests
+orbs:
+  unity: game-ci/unity@0.1.1
 
 workflows:
-  Unity_Test_Deploy:
+  test_and_build:
     jobs:
-      - UnityTests
+      - unity/test:
+          name: "test-2021"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu-2021"
+            target-platform: "linux-il2cpp"
+            resource-class: "medium"
+          project-path: "src"
+          test-platform: "playmode"
+          context: unity-orb-testing
+      - unity/build:
+          name: "build-linux64-2021"
+          step-name: "Build StandaloneLinux64"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu-2021"
+            target-platform: "linux-il2cpp"
+            resource-class: "medium"
+          project-path: "src"
+          build-target: StandaloneLinux64
+          compress: true
+          requires:
+            - test-2021
+          context: unity-orb-testing
+      - unity/build:
+          name: "build-webgl-2021"
+          step-name: "Build WebGL"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu"
+            target-platform: "webgl"
+            editor-version: "2021.2.11f1"
+            resource-class: "large"
+          project-path: "src"
+          build-target: "WebGL"
+          compress: false
+          requires:
+            - test-2021
+          context: unity-orb-testing
+      - unity/build:
+          name: "build-osx"
+          step-name: "Build StandaloneOSX"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu-2021"
+            target-platform: "mac-mono"
+            resource-class: "medium"
+          project-path: "src"
+          build-target: "StandaloneOSX"
+          requires:
+            - test-2021
+          context: unity-orb-testing
+      - unity/build:
+          name: "build-windows64-2021"
+          step-name: "Build StandaloneWindows64"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          executor:
+            name: "unity/ubuntu-2021"
+            target-platform: "windows-mono"
+            resource-class: "medium"
+          project-path: "src"
+          build-target: "StandaloneWindows64"
+          requires:
+            - test-2021
+          context: unity-orb-testing
