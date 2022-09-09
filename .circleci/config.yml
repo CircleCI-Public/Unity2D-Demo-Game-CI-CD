@@ -5,21 +5,30 @@ orbs:
 
 pre-steps:
     il2cpp: &il2cpp
+      - checkout
       - run:
           name: "Change the ProjectSettings.asset to use il2cpp"
           command: |
-            git clone --branch master --single-branch https://github.com/EricRibeiro/Unity2D-Demo-Game-CI-CD.git .
+            perl -pi -e 's/scriptingBackend.*\n/scriptingBackend:/' src/ProjectSettings/ProjectSettings.asset
             perl -pi -e 's/scriptingBackend.*/scriptingBackend:\n    Standalone: 1/' src/ProjectSettings/ProjectSettings.asset
             grep -A 2 scriptingBackend src/ProjectSettings/ProjectSettings.asset
+            git config --global user.email "ericribeiro@outlook.com.br"
+            git config --global user.name "Eric Ribeiro"
+            git add -A
+            git commit -m "Change the ProjectSettings.asset to use il2cpp"
     webgl: &webgl
     # Useful for playing the project in the CircleCI web app
     # Makes sharing and testing the project easier
+      - checkout
       - run:
           name: "Turn off WebGL compression"
           command: |
-            git clone --branch master --single-branch https://github.com/EricRibeiro/Unity2D-Demo-Game-CI-CD.git .
             perl -pi -e 's/webGLCompressionFormat.*/webGLCompressionFormat: 2/' src/ProjectSettings/ProjectSettings.asset
             grep -A 2 webGLCompressionFormat src/ProjectSettings/ProjectSettings.asset
+            git config --global user.email "ericribeiro@outlook.com.br"
+            git config --global user.name "Eric Ribeiro"
+            git add -A
+            git commit -m "Turn off WebGL compression"
 
 workflows:
   build-unity-project:
