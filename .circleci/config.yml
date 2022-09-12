@@ -1,73 +1,167 @@
 version: 2.1
 
 orbs:
-  unity: game-ci/unity@0.1.1
+  unity: game-ci/unity@1.1.0
 
 workflows:
-  test_and_build:
+  build-unity-project:
     jobs:
+      # Create the Unity activation license file
+      # You only need this if you are using the Personal license
+      # More info: https://game.ci/docs/circleci/activation#personal-license
+      - unity/create-activation-file:
+          name: "create-activation-file"
+
+      # Run tests in playmode for Linux, Windows and macOS
+      # More info: https://game.ci/docs/circleci/test
       - unity/test:
-          name: "test-2021"
-          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          name: "test-linux"
+          step-name: "Check if the tests run and results are uploaded"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
           executor:
-            name: "unity/ubuntu-2021"
-            target-platform: "linux-il2cpp"
-            resource-class: "medium"
+            name: "unity/ubuntu"
+            target_platform: "linux-il2cpp"
+            editor_version: "2021.3.9f1"
+            resource_class: "medium"
           project-path: "src"
           test-platform: "playmode"
-          context: unity-orb-testing
-      - unity/build:
-          name: "build-linux64-2021"
-          step-name: "Build StandaloneLinux64"
-          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          context: cpe-unity
+      - unity/test:
+          name: "test-windows"
+          step-name: "Check if the tests run and results are uploaded"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
           executor:
-            name: "unity/ubuntu-2021"
-            target-platform: "linux-il2cpp"
-            resource-class: "medium"
+            name: "unity/windows-2019"
+            size: "large"
+            editor_version: "2021.3.2f1"
+            target_platform: "windows-il2cpp"
+          project-path: "src"
+          test-platform: "playmode"
+          context: cpe-unity
+      - unity/test:
+          name: "test-osx"
+          step-name: "Check if the tests run and results are uploaded"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
+          executor:
+            name: "unity/macos"
+            editor_version: "2021.3.9f1"
+            resource_class: "large"
+          project-path: "src"
+          test-platform: "playmode"
+          context: cpe-unity
+
+      # Build for several platforms using IL2CPP for the scripting backend
+      # More info: https://game.ci/docs/circleci/build  
+      - unity/build:
+          name: "build-linux64-il2cpp"
+          step-name: "Build StandaloneLinux64"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
+          executor:
+            name: "unity/ubuntu"
+            target_platform: "linux-il2cpp"
+            editor_version: "2021.3.9f1"
+            resource_class: "large"
           project-path: "src"
           build-target: StandaloneLinux64
           compress: true
-          requires:
-            - test-2021
-          context: unity-orb-testing
+          context: cpe-unity
       - unity/build:
-          name: "build-webgl-2021"
+          name: "build-Windows64-il2cpp"
+          step-name: "Build StandaloneWindows64 il2cpp"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
+          executor:
+            name: "unity/windows-2019"
+            size: "large"
+            editor_version: "2021.3.2f1"
+            target_platform: "windows-il2cpp"
+          project-path: "src"
+          build-target: StandaloneWindows64
+          compress: true
+          context: cpe-unity
+      - unity/build:
+          name: "build-osx-il2cpp"
+          step-name: "Build macOS IL2CPP"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
+          executor:
+            name: "unity/macos"
+            editor_version: "2021.3.9f1"
+            resource_class: "large"
+          project-path: "src"
+          build-target: StandaloneOSX
+          compress: true
+          context: cpe-unity
+
+      # Build for several other platforms
+      - unity/build:
+          name: "build-webgl"
           step-name: "Build WebGL"
-          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
           executor:
             name: "unity/ubuntu"
-            target-platform: "webgl"
-            editor-version: "2021.2.11f1"
-            resource-class: "large"
+            target_platform: "webgl"
+            editor_version: "2021.3.9f1"
+            resource_class: "large"
           project-path: "src"
           build-target: "WebGL"
+          # Since "Compression Format" is set to disabled in Unity,
+          # if we set "compress" to false, we can play the game from
+          # the CircleCI web app by going in the "Artifacts" tab.
           compress: false
-          requires:
-            - test-2021
-          context: unity-orb-testing
+          context: cpe-unity
       - unity/build:
-          name: "build-osx"
-          step-name: "Build StandaloneOSX"
-          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          name: "build-android"
+          step-name: "Build Android"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
           executor:
-            name: "unity/ubuntu-2021"
-            target-platform: "mac-mono"
-            resource-class: "medium"
+            name: "unity/ubuntu"
+            target_platform: "android"
+            editor_version: "2021.3.2f1"
+            resource_class: "large"
           project-path: "src"
-          build-target: "StandaloneOSX"
-          requires:
-            - test-2021
-          context: unity-orb-testing
+          build-target: "Android"
+          context: cpe-unity
       - unity/build:
-          name: "build-windows64-2021"
-          step-name: "Build StandaloneWindows64"
-          unity-license-var-name: "UNITY_ENCODED_LICENSE_2021"
+          name: "build-ios"
+          step-name: "Build iOS"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
           executor:
-            name: "unity/ubuntu-2021"
-            target-platform: "windows-mono"
-            resource-class: "medium"
+            name: "unity/ubuntu"
+            target_platform: "ios"
+            editor_version: "2021.3.2f1"
+            resource_class: "large"
           project-path: "src"
-          build-target: "StandaloneWindows64"
-          requires:
-            - test-2021
-          context: unity-orb-testing
+          build-target: "iOS"
+          context: cpe-unity
+      - unity/build:
+          name: "build-tvOS"
+          step-name: "Build Apple's tvOS"
+          unity-license-var-name: "UNITY_ENCODED_LICENSE"
+          unity-username-var-name: "UNITY_USERNAME"
+          unity-password-var-name: "UNITY_PASSWORD"
+          executor:
+            name: "unity/windows-2019"
+            size: "large"
+            editor_version: "2021.3.2f1"
+            target_platform: "appletv"
+          project-path: "src"
+          build-target: tvOS
+          compress: true
+          context: cpe-unity
